@@ -11,6 +11,9 @@ export default class PlayGame extends Phaser.Scene {
     bricks = null;
     textPoints = null;
     textLife = null;
+    onBrickSound = null;
+    onPlatformSound = null;
+    decreaseLifeSound = null;
 
     constructor() {
         super('playgame');
@@ -33,6 +36,10 @@ export default class PlayGame extends Phaser.Scene {
         this.ball = new Ball(this);
         this.bricks = this.physics.add.staticGroup();
 
+        this.onBrickSound = this.sound.add('onbrick', { loop: false });
+        this.onPlatformSound = this.sound.add('onplatform', { loop: false });
+        this.decreaseLifeSound = this.sound.add('life', { loop: false });
+
         for (let i = 1; i < 6; i++) {
             for (let j = 1; j < 6; j++) {
                 const brickConfig = bricksconfig[Phaser.Math.Between(0, 4)];
@@ -52,6 +59,7 @@ export default class PlayGame extends Phaser.Scene {
         });
 
         this.physics.add.collider(this.ball, this.player, (ball, player) => {
+            this.onPlatformSound.play();
             let diff = 0;
             if (ball.getMiddlePositionX() < player.getMiddlePositionX()) {
                 diff = player.getMiddlePositionX() - ball.getMiddlePositionX();
@@ -65,6 +73,7 @@ export default class PlayGame extends Phaser.Scene {
         });
 
         this.physics.add.collider(this.ball, this.bricks, (ball, brick) => {
+            this.onBrickSound.play();
             if (brick.lifes <= 1) {
                 this.bricks.remove(brick, true);
             } else {
@@ -93,6 +102,8 @@ export default class PlayGame extends Phaser.Scene {
 
                 this.player.playerLifes--;
                 this.textLife.text = `Lifes: ${this.player.playerLifes}`;
+
+                this.decreaseLifeSound.play();
             }
         }
     }

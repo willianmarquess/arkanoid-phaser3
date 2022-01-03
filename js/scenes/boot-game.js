@@ -9,6 +9,9 @@ export default class Boot extends Phaser.Scene{
         this.load.image('player', 'assets/player/player.png');
         this.load.image('arkanoid', 'assets/scenes/arkanoid-logo.png');
         this.load.image('phaser', 'assets/scenes/phaserlogo.png');
+        this.load.audio('onbrick', 'assets/sounds/onbrick.wav');
+        this.load.audio('onplatform', 'assets/sounds/onplatform.wav');
+        this.load.audio('life', 'assets/sounds/life.wav');
     }
 
     create(){
