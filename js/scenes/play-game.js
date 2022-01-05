@@ -11,9 +11,11 @@ export default class PlayGame extends Phaser.Scene {
     bricks = null;
     textPoints = null;
     textLife = null;
-    onBrickSound = null;
-    onPlatformSound = null;
+    onBrickOrPlatformSound = null;
+    onDestroyBrickSound = null;
     decreaseLifeSound = null;
+    textTimer = null;
+    timer = 0;
 
     constructor() {
         super('playgame');
@@ -36,9 +38,11 @@ export default class PlayGame extends Phaser.Scene {
         this.ball = new Ball(this);
         this.bricks = this.physics.add.staticGroup();
 
-        this.onBrickSound = this.sound.add('onbrick', { loop: false });
-        this.onPlatformSound = this.sound.add('onplatform', { loop: false });
+        this.onBrickOrPlatformSound = this.sound.add('onbrickorplatform', { loop: false });
+        this.onDestroyBrickSound = this.sound.add('ondestroybrick', { loop: false });
         this.decreaseLifeSound = this.sound.add('life', { loop: false });
+
+        this.time.addEvent({ delay: 1000, callback: this.updateTimer, callbackScope: this, loop: true });
 
         for (let i = 1; i < 6; i++) {
             for (let j = 1; j < 6; j++) {
@@ -58,8 +62,12 @@ export default class PlayGame extends Phaser.Scene {
             fontSize: 30
         });
 
+        this.textTimer = this.add.text(20, 5, `Time: ${this.timer}`, {
+            fontSize: 30
+        });
+
         this.physics.add.collider(this.ball, this.player, (ball, player) => {
-            this.onPlatformSound.play();
+            this.onBrickOrPlatformSound.play();
             let diff = 0;
             if (ball.getMiddlePositionX() < player.getMiddlePositionX()) {
                 diff = player.getMiddlePositionX() - ball.getMiddlePositionX();
@@ -73,13 +81,15 @@ export default class PlayGame extends Phaser.Scene {
         });
 
         this.physics.add.collider(this.ball, this.bricks, (ball, brick) => {
-            this.onBrickSound.play();
+            this.onBrickOrPlatformSound.play();
             if (brick.lifes <= 1) {
                 this.bricks.remove(brick, true);
+                this.onDestroyBrickSound.play();
             } else {
                 brick.lifes--;
             }
-            this.player.playerPoints += brick.points;
+            this.player.winStreak++;
+            this.player.playerPoints += brick.points + (this.player.winStreak / 2);
             this.textPoints.text = `Points: ${this.player.playerPoints}`;
 
             if (this.bricks.countActive(true) === 0) {
@@ -97,14 +107,22 @@ export default class PlayGame extends Phaser.Scene {
                 this.ball.init();
 
                 if (this.player.playerLifes <= 1) {
-                    this.scene.start('gameover');
+                    this.timer = 0;
+                    this.scene.start('gameover', { points: this.player.playerPoints });
                 }
 
+                this.player.winStreak = 0;
                 this.player.playerLifes--;
                 this.textLife.text = `Lifes: ${this.player.playerLifes}`;
 
                 this.decreaseLifeSound.play();
             }
         }
+    }
+
+    updateTimer(){
+        this.timer++;
+        this.textTimer.text = `Time: ${this.timer}`;
+        this.ball.body.velocity.y += this.ball.body.velocity.y > 0 ? 10 : -10;
     }
 }

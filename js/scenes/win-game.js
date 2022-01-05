@@ -7,7 +7,7 @@ export default class WinGame extends Phaser.Scene{
     }
 
     init(data){
-        this.playerPoints = data.points || 0;
+        this.playerPoints = data.points ?? 0;
     }
 
     create(){

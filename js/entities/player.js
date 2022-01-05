@@ -4,6 +4,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
     playeVelocity = 300;
     playerPoints = 0;
     playerLifes = 3;
+    winStreak = 0;
 
     constructor(scene, x, y){
         super(scene, x, y, 'player');
