@@ -9,7 +9,7 @@ export default class PlayGame extends Phaser.Scene {
     height = 0;
     ball = null;
     bricks = null;
-    textPoints = null;
+    textScore = null;
     textLife = null;
     onBrickOrPlatformSound = null;
     onDestroyBrickSound = null;
@@ -54,7 +54,7 @@ export default class PlayGame extends Phaser.Scene {
             }
         }
 
-        this.textPoints = this.add.text(20, this.height - 35, `Points: ${this.player.playerPoints}`, {
+        this.textScore = this.add.text(20, this.height - 35, `Score: ${this.player.playerScore}`, {
             fontSize: 30
         });
 
@@ -89,11 +89,11 @@ export default class PlayGame extends Phaser.Scene {
                 brick.lifes--;
             }
             this.player.winStreak++;
-            this.player.playerPoints += brick.points + (this.player.winStreak / 2);
-            this.textPoints.text = `Points: ${this.player.playerPoints}`;
+            this.player.playerScore += brick.points + (this.player.winStreak / 2);
+            this.textScore.text = `Score: ${this.player.playerScore}`;
 
             if (this.bricks.countActive(true) === 0) {
-                this.scene.start('wingame', { points: this.player.playerPoints });
+                this.scene.start('wingame', { score: this.player.playerScore });
             }
         });
         this.physics.world.setBounds(0, 0, 640, 1133);
@@ -108,7 +108,7 @@ export default class PlayGame extends Phaser.Scene {
 
                 if (this.player.playerLifes <= 1) {
                     this.timer = 0;
-                    this.scene.start('gameover', { points: this.player.playerPoints });
+                    this.scene.start('gameover', { score: this.player.playerScore });
                 }
 
                 this.player.winStreak = 0;
