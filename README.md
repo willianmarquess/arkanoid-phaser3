@@ -15,7 +15,7 @@
 
 O projeto foi desenvolvido para fins didáticos, buscando melhorar as capacidades de utilização da linguagem Javascript e utilização do framework Phaser3, além de homenagear um clássico dos jogos "ARKANOID".
 
-## PHASER 3
+## Phaser 3
 
 <img src="https://camo.githubusercontent.com/17fcbeec762bd9d68f404dd9f012015fcad0cd6b2363487faf46fc03d924208e/68747470733a2f2f7068617365722e696f2f696d616765732f6769746875622f3330302f7068617365722d6865616465722e706e67">
 
